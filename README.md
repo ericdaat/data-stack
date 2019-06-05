@@ -6,6 +6,9 @@ A sample data stack running on Docker, that contains the following services:
 - [Metabase](https://metabase.com/) (with its Postgres database)
 - [MariaDB](https://mariadb.org/) (as main database)
 
+There is also a python package containing an example module, used by the
+example Airflow DAG.
+
 Run it with:
 
 ``` text

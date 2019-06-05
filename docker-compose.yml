@@ -44,10 +44,14 @@ services:
           - LOAD_EX=n
           - EXECUTOR=Local
           - POSTGRES_HOST=airflow-postgres
+          - PYTHONPATH=${PYTHONPATH}:/opt
       volumes:
+          # Airflow DAGS
           - ./airflow-dags:/usr/local/airflow/dags
           # Uncomment to include custom plugins
           # - ./airflow-plugins:/usr/local/airflow/plugins
+          # Python packages
+          - ./python_package:/opt/python_package/
       ports:
           - "8080:8080"
       command: webserver

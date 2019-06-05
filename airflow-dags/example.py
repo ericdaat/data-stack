@@ -2,9 +2,12 @@
 Code that goes along with the Airflow located at:
 http://airflow.readthedocs.org/en/latest/tutorial.html
 """
-from airflow import DAG
-from airflow.operators.bash_operator import BashOperator
 from datetime import datetime, timedelta
+
+from airflow import DAG
+from airflow.operators import BashOperator, PythonOperator
+
+from python_package.example_module import some_function
 
 
 default_args = {
@@ -44,5 +47,12 @@ t3 = BashOperator(
     dag=dag,
 )
 
+t4 = PythonOperator(
+    task_id="python_code",
+    python_callable=some_function,
+    dag=dag
+)
+
 t2.set_upstream(t1)
 t3.set_upstream(t1)
+t4.set_upstream(t1)
