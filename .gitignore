@@ -2,3 +2,4 @@ docker-volumes
 *.pyc
 venv
 .vscode
+docs/build
