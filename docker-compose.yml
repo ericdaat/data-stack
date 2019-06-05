@@ -12,6 +12,10 @@ services:
     volumes:
       - ./docker-volumes/mariadb:/var/lib/mysql
 
+  ############
+  # Metabase #
+  ############
+
   metabase:
       image: metabase/metabase
       ports:
@@ -35,22 +39,44 @@ services:
     volumes:
       - ./docker-volumes/metabase-postgres:/var/lib/postgresql/data/
 
+  ###########
+  # Airflow #
+  ###########
+
+  airflow-redis:
+        image: 'redis:3.2.7'
+        # command: redis-server --requirepass redispass
+
+  airflow-postgres:
+      image: postgres:9.6
+      environment:
+          - POSTGRES_USER=airflow
+          - POSTGRES_PASSWORD=airflow
+          - POSTGRES_DB=airflow
+      volumes:
+        - ./docker-volumes/airflow-postgres:/var/lib/postgresql/data/
+
   airflow-webserver:
       image: puckel/docker-airflow:1.10.2
       restart: always
       depends_on:
           - airflow-postgres
+          - airflow-redis
       environment:
           - LOAD_EX=n
-          - EXECUTOR=Local
+          - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+          - EXECUTOR=Celery
           - POSTGRES_HOST=airflow-postgres
+          - REDIS_HOST=airflow-redis
           - PYTHONPATH=${PYTHONPATH}:/opt
+          # - POSTGRES_USER=airflow
+          # - POSTGRES_PASSWORD=airflow
+          # - POSTGRES_DB=airflow
+          # - REDIS_PASSWORD=redispass
       volumes:
-          # Airflow DAGS
-          - ./airflow-dags:/usr/local/airflow/dags
+          - ./dags:/usr/local/airflow/dags
           # Uncomment to include custom plugins
-          # - ./airflow-plugins:/usr/local/airflow/plugins
-          # Python packages
+          # - ./plugins:/usr/local/airflow/plugins
           - ./python_package:/opt/python_package/
       ports:
           - "8080:8080"
@@ -61,11 +87,61 @@ services:
           timeout: 30s
           retries: 3
 
-  airflow-postgres:
-      image: postgres:9.6
+  flower:
+      image: puckel/docker-airflow:1.10.2
+      restart: always
+      depends_on:
+          - airflow-redis
       environment:
-          - POSTGRES_USER=airflow
-          - POSTGRES_PASSWORD=airflow
-          - POSTGRES_DB=airflow
+          - EXECUTOR=Celery
+          - REDIS_HOST=airflow-redis
+          - POSTGRES_HOST=airflow-postgres
+          # - REDIS_PASSWORD=redispass
+      ports:
+          - "5555:5555"
+      command: flower
+
+  airflow-scheduler:
+      image: puckel/docker-airflow:1.10.2
+      restart: always
+      depends_on:
+          - airflow-webserver
       volumes:
-      - ./docker-volumes/airflow-postgres:/var/lib/postgresql/data/
+          - ./dags:/usr/local/airflow/dags
+          # Uncomment to include custom plugins
+          # - ./plugins:/usr/local/airflow/plugins
+          - ./python_package:/opt/python_package/
+      environment:
+          - LOAD_EX=n
+          - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+          - EXECUTOR=Celery
+          - POSTGRES_HOST=airflow-postgres
+          - REDIS_HOST=airflow-redis
+          - PYTHONPATH=${PYTHONPATH}:/opt
+          # - POSTGRES_USER=airflow
+          # - POSTGRES_PASSWORD=airflow
+          # - POSTGRES_DB=airflow
+          # - REDIS_PASSWORD=redispass
+      command: scheduler
+
+  worker:
+      image: puckel/docker-airflow:1.10.2
+      restart: always
+      depends_on:
+          - airflow-scheduler
+      volumes:
+          - ./dags:/usr/local/airflow/dags
+          # Uncomment to include custom plugins
+          # - ./plugins:/usr/local/airflow/plugins
+          - ./python_package:/opt/python_package/
+      environment:
+          - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+          - EXECUTOR=Celery
+          - POSTGRES_HOST=airflow-postgres
+          - REDIS_HOST=airflow-redis
+          - PYTHONPATH=${PYTHONPATH}:/opt
+          # - POSTGRES_USER=airflow
+          # - POSTGRES_PASSWORD=airflow
+          # - POSTGRES_DB=airflow
+          # - REDIS_PASSWORD=redispass
+      command: worker
