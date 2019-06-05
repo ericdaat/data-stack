@@ -1,0 +1,67 @@
+version: "3"
+
+services:
+  mariadb:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker-volumes/mariadb:/var/lib/mysql
+
+  metabase:
+      image: metabase/metabase
+      ports:
+        - 3000:3000
+      depends_on:
+        - metabase-postgres
+      environment:
+        MB_DB_TYPE: postgres
+        MB_DB_DBNAME: metabase
+        MB_DB_PORT: 5432
+        MB_DB_USER: user
+        MB_DB_PASS: password
+        MB_DB_HOST: metabase-postgres
+
+  metabase-postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: metabase
+    volumes:
+      - ./docker-volumes/metabase-postgres:/var/lib/postgresql/data/
+
+  airflow-webserver:
+      image: puckel/docker-airflow:1.10.2
+      restart: always
+      depends_on:
+          - airflow-postgres
+      environment:
+          - LOAD_EX=n
+          - EXECUTOR=Local
+          - POSTGRES_HOST=airflow-postgres
+      volumes:
+          - ./airflow-dags:/usr/local/airflow/dags
+          # Uncomment to include custom plugins
+          # - ./airflow-plugins:/usr/local/airflow/plugins
+      ports:
+          - "8080:8080"
+      command: webserver
+      healthcheck:
+          test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+          interval: 30s
+          timeout: 30s
+          retries: 3
+
+  airflow-postgres:
+      image: postgres:9.6
+      environment:
+          - POSTGRES_USER=airflow
+          - POSTGRES_PASSWORD=airflow
+          - POSTGRES_DB=airflow
+      volumes:
+      - ./docker-volumes/airflow-postgres:/var/lib/postgresql/data/
