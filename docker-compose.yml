@@ -50,9 +50,9 @@ services:
   airflow-postgres:
       image: postgres:9.6
       environment:
-          - POSTGRES_USER=airflow
-          - POSTGRES_PASSWORD=airflow
-          - POSTGRES_DB=airflow
+          - POSTGRES_USER: airflow
+          - POSTGRES_PASSWORD: airflow
+          - POSTGRES_DB: airflow
       volumes:
         - ./docker-volumes/airflow-postgres:/var/lib/postgresql/data/
 
@@ -63,12 +63,12 @@ services:
           - airflow-postgres
           - airflow-redis
       environment:
-          - LOAD_EX=n
-          - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
-          - EXECUTOR=Celery
-          - POSTGRES_HOST=airflow-postgres
-          - REDIS_HOST=airflow-redis
-          - PYTHONPATH=${PYTHONPATH}:/opt
+          - LOAD_EX: n
+          - FERNET_KEY: 46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+          - EXECUTOR: Celery
+          - POSTGRES_HOST: airflow-postgres
+          - REDIS_HOST: airflow-redis
+          - PYTHONPATH: ${PYTHONPATH}:/opt
           # - POSTGRES_USER=airflow
           # - POSTGRES_PASSWORD=airflow
           # - POSTGRES_DB=airflow
@@ -93,9 +93,9 @@ services:
       depends_on:
           - airflow-redis
       environment:
-          - EXECUTOR=Celery
-          - REDIS_HOST=airflow-redis
-          - POSTGRES_HOST=airflow-postgres
+          - EXECUTOR: Celery
+          - REDIS_HOST: airflow-redis
+          - POSTGRES_HOST: airflow-postgres
           # - REDIS_PASSWORD=redispass
       ports:
           - "5555:5555"
@@ -112,12 +112,12 @@ services:
           # - ./plugins:/usr/local/airflow/plugins
           - ./python_package:/opt/python_package/
       environment:
-          - LOAD_EX=n
-          - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
-          - EXECUTOR=Celery
-          - POSTGRES_HOST=airflow-postgres
-          - REDIS_HOST=airflow-redis
-          - PYTHONPATH=${PYTHONPATH}:/opt
+          - LOAD_EX: n
+          - FERNET_KEY: 46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+          - EXECUTOR: Celery
+          - POSTGRES_HOST: airflow-postgres
+          - REDIS_HOST: airflow-redis
+          - PYTHONPATH: ${PYTHONPATH}:/opt
           # - POSTGRES_USER=airflow
           # - POSTGRES_PASSWORD=airflow
           # - POSTGRES_DB=airflow
@@ -135,13 +135,29 @@ services:
           # - ./plugins:/usr/local/airflow/plugins
           - ./python_package:/opt/python_package/
       environment:
-          - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
-          - EXECUTOR=Celery
-          - POSTGRES_HOST=airflow-postgres
-          - REDIS_HOST=airflow-redis
-          - PYTHONPATH=${PYTHONPATH}:/opt
+          - FERNET_KEY: 46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
+          - EXECUTOR: Celery
+          - POSTGRES_HOST: airflow-postgres
+          - REDIS_HOST: airflow-redis
+          - PYTHONPATH: ${PYTHONPATH}:/opt
           # - POSTGRES_USER=airflow
           # - POSTGRES_PASSWORD=airflow
           # - POSTGRES_DB=airflow
           # - REDIS_PASSWORD=redispass
       command: worker
+
+
+  ###############################
+  # Doccano Labelling Interface #
+  ###############################
+
+  doccano:
+    image: chakkiworks/doccano
+    volumes:
+      - ./docker-volumes/doccano/db.sqlite3:/doccano/app/db.slite3
+    environment:
+      - ADMIN_USERNAME: admin
+      - ADMIN_EMAIL: admin@example.com
+      - ADMIN_PASSWORD: password
+    ports:
+        - 8000:8000

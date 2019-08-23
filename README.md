@@ -10,6 +10,7 @@ A sample data stack running on Docker, that contains the following components:
 - A template python package, usable in Airflow DAGS
 - Unit-testing with [unittest](https://docs.python.org/3/library/unittest.html) library
 - [Sphinx](http://www.sphinx-doc.org/en/master/) auto-generated documentation
+- [Doccano](https://github.com/chakki-works/doccano) data labelling interface
 
 ## 2. Installation
 
@@ -65,3 +66,4 @@ cd docs && make html && open build/html/index.html;
 ## 4. References
 
 - [puckel/docker-airflow](https://github.com/puckel/docker-airflow)
+- [chakki-works/doccano](https://github.com/chakki-works/doccano)
