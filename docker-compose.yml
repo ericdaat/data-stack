@@ -18,14 +18,42 @@ services:
     volumes:
       - ./docker-volumes/mariadb:/var/lib/mysql
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - mariadb
+    ports:
+      - 8081:80
+    environment:
+      - PMA_HOST=mariadb
+      - MYSQL_ROOT_PASSWORD=password
+
+  postgres:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+    ports:
+      - 5432:5432
+
+  phppgadmin:
+    image: dockage/phppgadmin:latest
+    ports:
+    - 8082:80
+    environment:
+    - PHP_PG_ADMIN_SERVER_DESC=PostgreSQL
+    - PHP_PG_ADMIN_SERVER_HOST=postgres
+    - PHP_PG_ADMIN_SERVER_PORT=5432
+    - PHP_PG_ADMIN_SERVER_SSL_MODE=allow
+    - PHP_PG_ADMIN_SERVER_PG_DUMP_PATH=/usr/bin/pg_dump
+    - PHP_PG_ADMIN_SERVER_PG_DUMPALL_PATH=/usr/bin/pg_dumpall
+
   ###########
   # Jupyter #
   ###########
 
   jupyter:
     image: jupyter/datascience-notebook:latest
-    ports:
-      - 8888:8888
 
   ###############################
   # Doccano Labelling Interface #
@@ -33,8 +61,6 @@ services:
 
   doccano:
     image: chakkiworks/doccano
-    # volumes:
-      # - ./docker-volumes/doccano/db.sqlite3:/doccano/app/db.slite3
     environment:
       - ADMIN_USERNAME=admin
       - ADMIN_EMAIL=admin@example.com
@@ -51,8 +77,6 @@ services:
       POSTGRES_USER: "doccano"
       POSTGRES_PASSWORD: "doccano"
       POSTGRES_DB: "doccano"
-    ports:
-      - 5432:5432
 
   ############
   # Metabase #
