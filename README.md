@@ -7,10 +7,10 @@ A sample data stack running on Docker, that contains the following components:
 - [Airflow](https://airflow.apache.org/)
 - [Metabase](https://metabase.com/)
 - [MariaDB](https://mariadb.org/)
-- A template python package, usable in Airflow DAGS
-- Unit-testing with [unittest](https://docs.python.org/3/library/unittest.html) library
 - [Sphinx](http://www.sphinx-doc.org/en/master/) auto-generated documentation
 - [Doccano](https://github.com/chakki-works/doccano) data labelling interface
+- A template python module, usable in Airflow DAGS
+- Unit-testing with [pytest](https://docs.pytest.org/en/latest/) library
 
 ## 2. Installation
 
@@ -43,6 +43,7 @@ Then visit:
 
 - [localhost:3000](http://localhost:3000): for Metabase
 - [localhost:8080](http://localhost:8080): for Airflow
+- [localhost:8000](http://localhost:8080): for Doccano
 
 Add your Airflow DAGS in the [dags](./dags) folder.
 
@@ -51,7 +52,7 @@ Add your Airflow DAGS in the [dags](./dags) folder.
 Run the unit tests with:
 
 ```text
-python -m unittest discover -s tests;
+pytest tests
 ```
 
 ### 3.3 Generating the Sphinx docs

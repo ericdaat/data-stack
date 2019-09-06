@@ -1,5 +1,7 @@
-docker-volumes
 *.pyc
-venv
 .vscode
+.idea
+.pytest_cache
+docker-volumes
+venv
 docs/build

@@ -1,2 +1,0 @@
-""" An example python package
-"""
