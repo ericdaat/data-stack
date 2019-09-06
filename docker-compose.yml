@@ -1,6 +1,12 @@
-version: "3.7"
+version: "3"
+
 
 services:
+
+  #############
+  # Databases #
+  #############
+
   mariadb:
     image: mariadb
     environment:
@@ -11,6 +17,42 @@ services:
       - 3306:3306
     volumes:
       - ./docker-volumes/mariadb:/var/lib/mysql
+
+  ###########
+  # Jupyter #
+  ###########
+
+  jupyter:
+    image: jupyter/datascience-notebook:latest
+    ports:
+      - 8888:8888
+
+  ###############################
+  # Doccano Labelling Interface #
+  ###############################
+
+  doccano:
+    image: chakkiworks/doccano
+    # volumes:
+      # - ./docker-volumes/doccano/db.sqlite3:/doccano/app/db.slite3
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_EMAIL=admin@example.com
+      - ADMIN_PASSWORD=password
+      - DATABASE_URL=postgres://doccano:doccano@doccano-postgres:5432/doccano?sslmode=disable
+    ports:
+      - 8000:8000
+    depends_on:
+      - doccano-postgres
+
+  doccano-postgres:
+    image: postgres:9.6
+    environment:
+      POSTGRES_USER: "doccano"
+      POSTGRES_PASSWORD: "doccano"
+      POSTGRES_DB: "doccano"
+    ports:
+      - 5432:5432
 
   ############
   # Metabase #
@@ -145,19 +187,3 @@ services:
         # - POSTGRES_DB=airflow
         # - REDIS_PASSWORD=redispass
     command: worker
-
-
-  ###############################
-  # Doccano Labelling Interface #
-  ###############################
-
-  doccano:
-    image: chakkiworks/doccano
-    volumes:
-      - ./docker-volumes/doccano/db.sqlite3:/doccano/app/db.slite3
-    environment:
-      - ADMIN_USERNAME=admin
-      - ADMIN_EMAIL=admin@example.com
-      - ADMIN_PASSWORD=password
-    ports:
-        - 8000:8000
