@@ -2,10 +2,15 @@ import uuid
 from datetime import datetime
 
 import sqlalchemy as db
-from sqlalchemy_utils import UUIDType
-from sqlalchemy.orm import relationship
+from sqlalchemy_utils import UUIDType, create_database, database_exists
+from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 
-from .db import Base
+
+ENGINE_URL = "postgres://user:password@localhost:5432/ml_helper"
+
+metadata = db.MetaData()
+Base = declarative_base(metadata=metadata)
 
 
 class Model(Base):
@@ -18,7 +23,7 @@ class Model(Base):
 
     uuid = db.Column(UUIDType, primary_key=True, default=uuid.uuid4)
 
-    id = db.Column(db.String)
+    id = db.Column(db.String, unique=True)
     last_updated = db.Column(db.DateTime,
                              default=datetime.now,
                              onupdate=datetime.now)
@@ -28,7 +33,7 @@ class Model(Base):
     optimizer_name = db.Column(db.String)
     optimizer_params = db.Column(db.JSON)
 
-    epoch = relationship("Epoch", cascade="all, delete", passive_deletes=True)
+    epoch = relationship("Epoch")
 
 
 class Epoch(Base):
@@ -40,7 +45,7 @@ class Epoch(Base):
     uuid = db.Column(UUIDType, primary_key=True, default=uuid.uuid4)
     model_id = db.Column(
         db.String,
-        db.ForeignKey('model.id', ondelete="cascade"),
+        db.ForeignKey('model.id'),
     )
 
     created_at = db.Column(db.DateTime, default=datetime.now)
@@ -49,3 +54,18 @@ class Epoch(Base):
     training_loss = db.Column(db.Float)
     training_F1 = db.Column(db.Float)
     eval_F1 = db.Column(db.Float)
+
+
+engine = db.create_engine(ENGINE_URL)
+Session = sessionmaker(bind=engine)
+
+
+def init_db():
+    if not database_exists(ENGINE_URL):
+        create_database(ENGINE_URL)
+    metadata.drop_all(engine)
+    metadata.create_all(engine)
+
+
+if __name__ == "__main__":
+    init_db()

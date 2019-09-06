@@ -83,7 +83,7 @@ services:
   ############
 
   metabase:
-    image: metabase/metabase
+    image: metabase/metabase:latest
     ports:
       - 3000:3000
     depends_on:
