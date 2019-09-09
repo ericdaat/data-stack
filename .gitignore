@@ -2,6 +2,7 @@
 .vscode
 .idea
 .pytest_cache
-docker-volumes
+.data
+.docker_volumes
 venv
 docs/build

@@ -16,7 +16,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./docker-volumes/mariadb:/var/lib/mysql
+      - ./.docker_volumes/mariadb:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
@@ -35,6 +35,8 @@ services:
       - POSTGRES_PASSWORD=password
     ports:
       - 5432:5432
+    volumes:
+      - ./.docker_volumes/postgres:/var/lib/postgresql/data/
 
   phppgadmin:
     image: dockage/phppgadmin:latest
@@ -77,13 +79,16 @@ services:
       POSTGRES_USER: "doccano"
       POSTGRES_PASSWORD: "doccano"
       POSTGRES_DB: "doccano"
+    volumes:
+      - ./.docker_volumes/doccano-postgres:/var/lib/postgresql/data/
+
 
   ############
   # Metabase #
   ############
 
   metabase:
-    image: metabase/metabase
+    image: metabase/metabase:latest
     ports:
       - 3000:3000
     depends_on:
@@ -103,7 +108,7 @@ services:
       - POSTGRES_USER=user
       - POSTGRES_DB=metabase
     volumes:
-      - ./docker-volumes/metabase-postgres:/var/lib/postgresql/data/
+      - ./.docker_volumes/metabase-postgres:/var/lib/postgresql/data/
 
   ###########
   # Airflow #
@@ -120,7 +125,7 @@ services:
         - POSTGRES_PASSWORD=airflow
         - POSTGRES_DB=airflow
     volumes:
-      - ./docker-volumes/airflow-postgres:/var/lib/postgresql/data/
+      - ./.docker_volumes/airflow-postgres:/var/lib/postgresql/data/
 
   airflow-webserver:
     image: puckel/docker-airflow:1.10.3
@@ -134,7 +139,7 @@ services:
         - EXECUTOR=Celery
         - POSTGRES_HOST=airflow-postgres
         - REDIS_HOST=airflow-redis
-        - PYTHONPATH=${PYTHONPATH}:/opt
+        - PYTHONPATH=${PYTHONPATH}:/code/src
         # - POSTGRES_USER=airflow
         # - POSTGRES_PASSWORD=airflow
         # - POSTGRES_DB=airflow
@@ -143,7 +148,7 @@ services:
         - ./dags:/usr/local/airflow/dags
         # Uncomment to include custom plugins
         # - ./plugins:/usr/local/airflow/plugins
-        - ./python_package:/opt/python_package/
+        - ./src:/code/src/
     ports:
         - "8080:8080"
     command: webserver
@@ -176,7 +181,7 @@ services:
         - ./dags:/usr/local/airflow/dags
         # Uncomment to include custom plugins
         # - ./plugins:/usr/local/airflow/plugins
-        - ./python_package:/opt/python_package/
+        - ./src:/code/src/
     environment:
         - LOAD_EX=n
         - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
@@ -199,7 +204,7 @@ services:
         - ./dags:/usr/local/airflow/dags
         # Uncomment to include custom plugins
         # - ./plugins:/usr/local/airflow/plugins
-        - ./python_package:/opt/python_package/
+        - ./src:/code/src/
     environment:
         - FERNET_KEY=46BKJoQYlPPOexq0OhDZnIlNepKFf87WFwLbfzqDDho=
         - EXECUTOR=Celery
