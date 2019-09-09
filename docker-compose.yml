@@ -4,6 +4,18 @@ version: "3"
 services:
 
   #############
+  # Webserver #
+  #############
+
+  nginx:
+    image: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx.conf:/etc/nginx.conf
+
+  #############
   # Databases #
   #############
 
