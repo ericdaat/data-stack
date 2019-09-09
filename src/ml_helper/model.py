@@ -27,10 +27,10 @@ class Model(Base):
     last_updated = db.Column(db.DateTime,
                              default=datetime.now,
                              onupdate=datetime.now)
-    model_name = db.Column(db.String)
+    model_name = db.Column(db.String, nullable=False)
     model_params = db.Column(db.JSON)
 
-    optimizer_name = db.Column(db.String)
+    optimizer_name = db.Column(db.String, nullable=False)
     optimizer_params = db.Column(db.JSON)
 
     epoch = relationship("Epoch")
@@ -50,10 +50,16 @@ class Epoch(Base):
 
     created_at = db.Column(db.DateTime, default=datetime.now)
 
-    number = db.Column(db.Integer)
+    number = db.Column(db.Integer, nullable=False)
+
     training_loss = db.Column(db.Float)
+    eval_loss = db.Column(db.Float)
+
     training_F1 = db.Column(db.Float)
     eval_F1 = db.Column(db.Float)
+
+    training_acc = db.Column(db.Float)
+    eval_acc = db.Column(db.Float)
 
 
 engine = db.create_engine(ENGINE_URL)

@@ -12,6 +12,11 @@ import torch.nn as nn
 from torchtext.datasets import text_classification
 from torch.utils.data.dataset import random_split
 
+from src.ml_helper.training import (
+    register_model_in_db, register_epoch_in_db,
+    hash_parameters, delete_model
+)
+
 
 BATCH_SIZE = 16
 EMBED_DIM = 32
@@ -108,12 +113,43 @@ def main():
     VOCAB_SIZE = len(train_dataset.get_vocab())
     NUN_CLASS = len(train_dataset.get_labels())
 
-    model = TextSentiment(VOCAB_SIZE, EMBED_DIM, NUN_CLASS).to(device)
+    model_params = dict(
+        embed_dim=EMBED_DIM,
+        n_epochs=5
+    )
 
-    N_EPOCHS = 5
+    optimizer_params = dict(
+        lr=0.04
+    )
+
+    model_name = "TextSentiment"
+    optimizer_name = "SGD"
+
+    model_id = hash_parameters(
+        model_params,
+        model_name,
+        optimizer_params,
+        optimizer_name
+    )
+
+    delete_model(model_id)
+
+    register_model_in_db(
+        model_id,
+        model_params,
+        model_name,
+        optimizer_params,
+        optimizer_name
+    )
+
+    model = TextSentiment(
+        VOCAB_SIZE,
+        model_params["embed_dim"],
+        NUN_CLASS
+    ).to(device)
 
     criterion = torch.nn.CrossEntropyLoss().to(device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=4.0)
+    optimizer = torch.optim.SGD(model.parameters(), lr=optimizer_params["lr"])
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1, gamma=0.9)
 
     train_len = int(len(train_dataset) * 0.95)
@@ -122,7 +158,7 @@ def main():
         [train_len, len(train_dataset) - train_len]
     )
 
-    for epoch in range(N_EPOCHS):
+    for epoch in range(model_params["n_epochs"]):
 
         start_time = time.time()
         train_loss, train_acc = train_func(
@@ -134,6 +170,15 @@ def main():
         secs = int(time.time() - start_time)
         mins = secs / 60
         secs = secs % 60
+
+        register_epoch_in_db(
+            model_id,
+            epoch+1,
+            training_loss=train_loss,
+            eval_loss=valid_loss.item(),
+            training_acc=train_acc,
+            eval_acc=valid_acc
+        )
 
         print('Epoch: %d' % (epoch + 1), " | time in %d minutes, %d seconds" % (mins, secs))
         print(f'\tLoss: {train_loss:.4f}(train)\t|\tAcc: {train_acc * 100:.1f} % (train)')

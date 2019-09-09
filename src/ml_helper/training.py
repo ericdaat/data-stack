@@ -2,8 +2,7 @@ import hashlib
 
 from sqlalchemy import func
 
-from .db import Session
-from .model import Model, Epoch
+from .model import Session, Model, Epoch
 
 
 def _commit_object(obj):
@@ -25,14 +24,11 @@ def register_model_in_db(model_id, model_params, model_name,
     _commit_object(model)
 
 
-def register_epoch_in_db(model_id, epoch_number,
-                         training_loss, training_F1, eval_F1):
+def register_epoch_in_db(model_id, epoch_number, **kwargs):
     epoch_result = Epoch(
         model_id=model_id,
         number=epoch_number,
-        training_loss=training_loss,
-        training_F1=training_F1,
-        eval_F1=eval_F1
+        **kwargs,
     )
 
     _commit_object(epoch_result)
