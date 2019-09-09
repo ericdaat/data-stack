@@ -3,6 +3,6 @@
 .idea
 .pytest_cache
 .data
-docker-volumes
+.docker_volumes
 venv
 docs/build
