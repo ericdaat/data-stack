@@ -68,6 +68,10 @@ services:
 
   jupyter:
     image: jupyter/datascience-notebook:latest
+    ports:
+      - 8888:8888
+    volumes:
+      - ./notebooks:/home/jovyan/notebooks
 
   ###############################
   # Doccano Labelling Interface #

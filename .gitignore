@@ -4,5 +4,7 @@
 .pytest_cache
 .data
 .docker_volumes
+.ipynb_checkpoints
+.DS_Store
 venv
 docs/build
