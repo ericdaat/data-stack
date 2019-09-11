@@ -6,10 +6,14 @@ A sample data stack running on Docker, that contains the following components:
 
 - [Airflow](https://airflow.apache.org/)
 - [Metabase](https://metabase.com/)
-- [MariaDB](https://mariadb.org/)
-- [Sphinx](http://www.sphinx-doc.org/en/master/) auto-generated documentation
+- [MariaDB](https://mariadb.org/), with [PHPMyAdmin](https://www.phpmyadmin.net/)
+- [Postgres](https://www.postgresql.org/), with [PHPPgAdmin](http://phppgadmin.sourceforge.net/doku.php)
 - [Doccano](https://github.com/chakki-works/doccano) data labelling interface
+- [Nginx](https://nginx.com) as reverse proxy
+- [Sphinx](http://www.sphinx-doc.org/en/master/) auto-generated documentation
 - A template python module, usable in Airflow DAGS
+- A template machine learning package, using [Pytorch](https://pytorch.org)
+- A `ml_helper` package, that provides functions to store machine learning models results and parameters in a database.
 - Unit-testing with [pytest](https://docs.pytest.org/en/latest/) library
 
 ## 2. Installation
