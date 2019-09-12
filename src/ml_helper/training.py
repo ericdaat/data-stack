@@ -11,14 +11,10 @@ def _commit_object(obj):
     session.commit()
 
 
-def register_model_in_db(model_id, model_params, model_name,
-                         optimizer_params, optimizer_name):
+def register_model_in_db(model_id, params):
     model = Model(
         id=model_id,
-        model_name=model_name,
-        model_params=model_params,
-        optimizer_name=optimizer_name,
-        optimizer_params=optimizer_params
+        params=params,
     )
 
     _commit_object(model)
@@ -52,14 +48,8 @@ def retrieve_best_model_params():
     )
 
 
-def hash_parameters(model_params, model_name,
-                    optimizer_params, optimizer_name):
-    string = str(model_params)\
-             + str(model_name)\
-             + str(optimizer_params)\
-             + str(optimizer_name)
-
-    params_hash = hashlib.sha256(str(string).encode()).hexdigest()
+def hash_parameters(params):
+    params_hash = hashlib.sha256(str(params).encode()).hexdigest()
 
     return params_hash
 

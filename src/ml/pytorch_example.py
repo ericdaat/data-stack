@@ -7,6 +7,7 @@ import time
 import os
 
 import torch
+from torch import optim
 from torch.utils.data import DataLoader
 import torch.nn as nn
 from torchtext.datasets import text_classification
@@ -19,7 +20,6 @@ from src.ml_helper.training import (
 
 
 BATCH_SIZE = 16
-EMBED_DIM = 32
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
@@ -102,54 +102,36 @@ def main():
     if not os.path.isdir('./.data'):
         os.mkdir('./.data')
 
-    NGRAMS = 2
-
     train_dataset, test_dataset = text_classification.DATASETS['AG_NEWS'](
         root='./.data',
-        ngrams=NGRAMS,
+        ngrams=2,
         vocab=None
     )
 
     VOCAB_SIZE = len(train_dataset.get_vocab())
     NUN_CLASS = len(train_dataset.get_labels())
 
-    model_params = dict(
-        embed_dim=EMBED_DIM,
-        n_epochs=5
+    params = dict(
+        embed_dim=32,
+        n_epochs=5,
+        lr=0.04,
+        model_name="TextSentiment",
+        optimizer_name="SGD"
     )
 
-    optimizer_params = dict(
-        lr=0.04
-    )
-
-    model_name = "TextSentiment"
-    optimizer_name = "SGD"
-
-    model_id = hash_parameters(
-        model_params,
-        model_name,
-        optimizer_params,
-        optimizer_name
-    )
-
+    model_id = hash_parameters(params)
     delete_model(model_id)
-
-    register_model_in_db(
-        model_id,
-        model_params,
-        model_name,
-        optimizer_params,
-        optimizer_name
-    )
+    register_model_in_db(model_id, params)
+    print("stored model id:", model_id)
 
     model = TextSentiment(
         VOCAB_SIZE,
-        model_params["embed_dim"],
+        params["embed_dim"],
         NUN_CLASS
     ).to(device)
 
     criterion = torch.nn.CrossEntropyLoss().to(device)
-    optimizer = torch.optim.SGD(model.parameters(), lr=optimizer_params["lr"])
+    optimizer = getattr(optim, params["optimizer_name"])(model.parameters(), lr=params["lr"])
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, 1, gamma=0.9)
 
     train_len = int(len(train_dataset) * 0.95)
@@ -158,7 +140,7 @@ def main():
         [train_len, len(train_dataset) - train_len]
     )
 
-    for epoch in range(model_params["n_epochs"]):
+    for epoch in range(params["n_epochs"]):
 
         start_time = time.time()
         train_loss, train_acc = train_func(

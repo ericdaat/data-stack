@@ -15,11 +15,6 @@ Base = declarative_base(metadata=metadata)
 
 class Model(Base):
     __tablename__ = "model"
-    __table_args__ = (
-        db.UniqueConstraint(
-            "id", "model_name", "optimizer_name", name="unique_model"
-        ),
-    )
 
     uuid = db.Column(UUIDType, primary_key=True, default=uuid.uuid4)
 
@@ -27,11 +22,8 @@ class Model(Base):
     last_updated = db.Column(db.DateTime,
                              default=datetime.now,
                              onupdate=datetime.now)
-    model_name = db.Column(db.String, nullable=False)
-    model_params = db.Column(db.JSON)
 
-    optimizer_name = db.Column(db.String, nullable=False)
-    optimizer_params = db.Column(db.JSON)
+    params = db.Column(db.JSON)
 
     epoch = relationship("Epoch")
 
@@ -71,6 +63,7 @@ def init_db():
         create_database(ENGINE_URL)
     metadata.drop_all(engine)
     metadata.create_all(engine)
+    print("DB initialized.")
 
 
 if __name__ == "__main__":
