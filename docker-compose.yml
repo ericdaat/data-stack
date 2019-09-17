@@ -145,7 +145,6 @@ services:
 
   airflow-webserver:
     image: puckel/docker-airflow:1.10.3
-    restart: always
     depends_on:
         - airflow-postgres
         - airflow-redis
@@ -176,7 +175,6 @@ services:
 
   flower:
     image: puckel/docker-airflow:1.10.3
-    restart: always
     depends_on:
         - airflow-redis
     environment:
@@ -190,7 +188,6 @@ services:
 
   airflow-scheduler:
     image: puckel/docker-airflow:1.10.3
-    restart: always
     depends_on:
         - airflow-webserver
     volumes:
@@ -213,7 +210,6 @@ services:
 
   worker:
     image: puckel/docker-airflow:1.10.3
-    restart: always
     depends_on:
         - airflow-scheduler
     volumes:
