@@ -173,7 +173,7 @@ services:
         timeout: 30s
         retries: 3
 
-  flower:
+  airflow-flower:
     image: puckel/docker-airflow:1.10.3
     depends_on:
         - airflow-redis
@@ -208,7 +208,7 @@ services:
         # - REDIS_PASSWORD=redispass
     command: scheduler
 
-  worker:
+  airflow-worker:
     image: puckel/docker-airflow:1.10.3
     depends_on:
         - airflow-scheduler
