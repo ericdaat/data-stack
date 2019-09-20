@@ -13,7 +13,7 @@ services:
       - 80:80
     volumes:
       - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx.conf:/etc/nginx.conf
+      - ./nginx/nginx.conf:/etc/nginx.conf
 
   #############
   # Databases #
