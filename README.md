@@ -64,7 +64,7 @@ pytest tests
 Generate the Sphinx documentation with:
 
 ```text
-sphinx-apidoc ./python_package -o docs/source -M;
+sphinx-apidoc ./src -o docs/source -M;
 cd docs && make html && open build/html/index.html;
 ```
 

@@ -1,7 +1,7 @@
-python_package
-==============
+src
+===
 
 .. toctree::
    :maxdepth: 4
 
-   python_package
+   src
