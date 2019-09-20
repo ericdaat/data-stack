@@ -10,8 +10,6 @@
    :maxdepth: 2
    :caption: Contents:
 
-   src
-
 
 
 Indices and tables

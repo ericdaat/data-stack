@@ -38,8 +38,13 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
+    'autoapi.extension',
     'm2r'
 ]
+
+# sphinx autoapi
+autoapi_dirs = ['../../src']
+autoapi_root = 'autoapi/src'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
