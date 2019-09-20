@@ -154,7 +154,7 @@ services:
         - EXECUTOR=Celery
         - POSTGRES_HOST=airflow-postgres
         - REDIS_HOST=airflow-redis
-        - PYTHONPATH=${PYTHONPATH}:/code/src
+        - PYTHONPATH=/code
         # - POSTGRES_USER=airflow
         # - POSTGRES_PASSWORD=airflow
         # - POSTGRES_DB=airflow
@@ -201,7 +201,7 @@ services:
         - EXECUTOR=Celery
         - POSTGRES_HOST=airflow-postgres
         - REDIS_HOST=airflow-redis
-        - PYTHONPATH=${PYTHONPATH}:/opt
+        - PYTHONPATH=/code
         # - POSTGRES_USER=airflow
         # - POSTGRES_PASSWORD=airflow
         # - POSTGRES_DB=airflow
@@ -222,7 +222,7 @@ services:
         - EXECUTOR=Celery
         - POSTGRES_HOST=airflow-postgres
         - REDIS_HOST=airflow-redis
-        - PYTHONPATH=${PYTHONPATH}:/opt
+        - PYTHONPATH=/code
         # - POSTGRES_USER=airflow
         # - POSTGRES_PASSWORD=airflow
         # - POSTGRES_DB=airflow
