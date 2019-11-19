@@ -33,6 +33,6 @@ def replace_urls(text, replace_with="<URL>"):
         str: Output sentence with replaced url
     """
     url_regex = re.compile(r"((http|ftp|https):\/\/)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b(.*)")
-    text = url_regex.sub(replace_with, r)
+    text = url_regex.sub(replace_with, text)
 
     return text
