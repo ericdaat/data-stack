@@ -14,6 +14,7 @@ A sample data stack running on Docker, that contains the following components:
 - A template python module, usable in Airflow DAGS
 - A template machine learning package, using [Pytorch](https://pytorch.org)
 - A `ml_helper` package, that provides functions to store machine learning models results and parameters in a database.
+- A `utils` package with utilities functions.
 - Unit-testing with [pytest](https://docs.pytest.org/en/latest/) library
 
 ## 2. Installation
