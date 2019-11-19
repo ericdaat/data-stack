@@ -8,3 +8,6 @@
 .DS_Store
 venv
 docs/build
+build
+dist
+data_stack.egg-info
