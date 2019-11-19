@@ -1,7 +1,10 @@
+import logging
+
 import numpy as np
 
 
-def load_pretrained_embeddings(embeddings_file, embeddings_dim, word_to_ix):
+def load_pretrained_embeddings(embeddings_file, embeddings_dim, word_to_ix,
+                               skip_header=False):
     """ Load pretrained embeddings weights.
     For the words that don't have a pre-trained embedding, we assign them
     a randomly initialized one.
@@ -18,6 +21,8 @@ def load_pretrained_embeddings(embeddings_file, embeddings_dim, word_to_ix):
 
     with open(embeddings_file, "r") as f:
         for i, line in enumerate(f):
+            if skip_header and i == 0:
+                continue
             # parse row
             line_split = line.split(" ")
             word = line_split[0]
