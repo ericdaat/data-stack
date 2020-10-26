@@ -1,5 +1,9 @@
 # Data Stack
 
+![Python application](https://github.com/ericdaat/data-stack/workflows/Python%20application/badge.svg?branch=master)
+[![Documentation Status](https://readthedocs.org/projects/data-stack/badge/?version=latest)](https://data-stack.readthedocs.io/en/latest/?badge=latest)
+
+
 ## 1. Presentation
 
 A sample data stack running on Docker, that contains the following components:
