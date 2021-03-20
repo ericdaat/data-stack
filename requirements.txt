@@ -11,7 +11,7 @@ future==0.18.2
 idna==2.8
 imagesize==1.1.0
 importlib-metadata==0.20
-Jinja2==2.10.1
+Jinja2==2.11.3
 lazy-object-proxy==1.4.3
 m2r==0.2.1
 MarkupSafe==1.1.1
